@@ -77,29 +77,41 @@ function App() {
 
   // Handle hash verification
   const handleHashVerification = async () => {
+    console.log("handleHashVerification called with hash:", verifyHash);
+    
     if (!verifyHash.trim()) {
       toast.error("Please enter a hash to verify");
       return;
     }
 
     setLoading(true);
+    setVerificationResult(null); // Clear previous result
     toast.info("Verifying hash...");
 
     try {
-      console.log("Making API call to:", `${API}/verify/${verifyHash}`);
-      const response = await axios.post(`${API}/verify/${verifyHash}`);
-      console.log("API response:", response.data);
+      const url = `${API}/verify/${verifyHash.trim()}`;
+      console.log("Making API call to:", url);
       
-      setVerificationResult(response.data);
-      console.log("Verification result set:", response.data);
+      const response = await axios.post(url);
+      console.log("API response received:", response);
+      console.log("Response data:", response.data);
       
-      toast.success("Hash verification complete!");
-      fetchVerifications();
+      if (response.data) {
+        setVerificationResult(response.data);
+        console.log("Verification result set in state");
+        toast.success("Hash verification complete!");
+        fetchVerifications();
+      } else {
+        console.error("No data in response");
+        toast.error("No verification data received");
+      }
     } catch (error) {
       console.error("Verification error:", error);
+      console.error("Error details:", error.response);
       toast.error("Verification failed: " + (error.response?.data?.detail || error.message));
     } finally {
       setLoading(false);
+      console.log("handleHashVerification completed");
     }
   };
 
