@@ -86,8 +86,13 @@ function App() {
     toast.info("Verifying hash...");
 
     try {
+      console.log("Making API call to:", `${API}/verify/${verifyHash}`);
       const response = await axios.post(`${API}/verify/${verifyHash}`);
+      console.log("API response:", response.data);
+      
       setVerificationResult(response.data);
+      console.log("Verification result set:", response.data);
+      
       toast.success("Hash verification complete!");
       fetchVerifications();
     } catch (error) {
