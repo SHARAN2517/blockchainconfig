@@ -237,6 +237,27 @@ function App() {
                   >
                     {loading ? "Verifying..." : "Verify"}
                   </Button>
+                  <Button
+                    onClick={() => {
+                      console.log("Test button clicked");
+                      setVerificationResult({
+                        id: "test-id",
+                        file_hash: "test-hash",
+                        is_authentic: true,
+                        confidence_score: 0.95,
+                        blockchain_verified: true,
+                        analysis_details: {
+                          risk_level: "low",
+                          analysis_summary: "Test result for debugging"
+                        }
+                      });
+                    }}
+                    variant="outline"
+                    size="lg"
+                    className="px-4"
+                  >
+                    Test
+                  </Button>
                 </div>
 
                 {verificationResult && (
