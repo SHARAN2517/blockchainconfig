@@ -75,52 +75,41 @@ function App() {
     }
   };
 
-  // Handle hash verification
-  const handleHashVerification = async () => {
-    console.log("handleHashVerification called with hash:", verifyHash);
+  // Handle hash verification - simplified version
+  const handleHashVerification = () => {
+    console.log("Button clicked, hash:", verifyHash);
     
     if (!verifyHash.trim()) {
       toast.error("Please enter a hash to verify");
       return;
     }
 
+    console.log("Starting verification process...");
     setLoading(true);
-    setVerificationResult(null); // Clear previous result
+    setVerificationResult(null);
     toast.info("Verifying hash...");
 
-    try {
-      const url = `${API}/verify/${verifyHash.trim()}`;
-      console.log("Making API call to:", url);
-      
-      // Simple fetch call instead of axios to test
-      const response = await fetch(url, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        }
-      });
-      
-      console.log("Fetch response:", response);
-      
-      if (response.ok) {
-        const data = await response.json();
-        console.log("Response data:", data);
+    // Use setTimeout to ensure state updates are processed
+    setTimeout(async () => {
+      try {
+        const url = `${API}/verify/${verifyHash.trim()}`;
+        console.log("Making API call to:", url);
         
-        setVerificationResult(data);
-        console.log("Verification result set in state");
-        toast.success("Hash verification complete!");
-        fetchVerifications();
-      } else {
-        console.error("Response not ok:", response.status, response.statusText);
-        toast.error(`Verification failed: ${response.status} ${response.statusText}`);
+        const response = await axios.post(url);
+        console.log("Response received:", response.data);
+        
+        if (response.data) {
+          setVerificationResult(response.data);
+          toast.success("Hash verification complete!");
+          fetchVerifications();
+        }
+      } catch (error) {
+        console.error("Error:", error);
+        toast.error("Verification failed: " + (error.response?.data?.detail || error.message));
+      } finally {
+        setLoading(false);
       }
-    } catch (error) {
-      console.error("Error in handleHashVerification:", error);
-      toast.error("Verification failed: " + error.message);
-    } finally {
-      setLoading(false);
-      console.log("handleHashVerification completed");
-    }
+    }, 100);
   };
 
   // Get file type icon
