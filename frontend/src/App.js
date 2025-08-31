@@ -75,34 +75,55 @@ function App() {
     }
   };
 
-  // Handle hash verification - fixed version
+  // Handle hash verification - with detailed logging
   const handleHashVerification = async () => {
-    console.log("handleHashVerification called with hash:", verifyHash);
+    console.log("=== HASH VERIFICATION START ===");
+    console.log("Hash:", verifyHash);
+    console.log("API URL:", API);
     
     if (!verifyHash.trim()) {
+      console.log("Empty hash, showing error");
       toast.error("Please enter a hash to verify");
       return;
     }
 
+    console.log("Setting loading state...");
     setLoading(true);
     setVerificationResult(null);
     toast.info("Verifying hash...");
 
     try {
       const url = `${API}/verify/${verifyHash.trim()}`;
-      console.log("Making API call to:", url);
+      console.log("Full URL:", url);
+      console.log("Making axios POST request...");
       
       const response = await axios.post(url);
-      console.log("API response:", response.data);
+      console.log("Response received:", response);
+      console.log("Response status:", response.status);
+      console.log("Response data:", response.data);
       
-      setVerificationResult(response.data);
-      toast.success("Hash verification complete!");
-      fetchVerifications();
+      if (response.data) {
+        console.log("Setting verification result...");
+        setVerificationResult(response.data);
+        console.log("Verification result set successfully");
+        toast.success("Hash verification complete!");
+        fetchVerifications();
+      } else {
+        console.log("No data in response");
+        toast.error("No verification data received");
+      }
     } catch (error) {
-      console.error("Verification error:", error);
+      console.error("=== ERROR IN VERIFICATION ===");
+      console.error("Error object:", error);
+      console.error("Error message:", error.message);
+      console.error("Error response:", error.response);
+      console.error("Error response data:", error.response?.data);
+      console.error("Error response status:", error.response?.status);
       toast.error("Verification failed: " + (error.response?.data?.detail || error.message));
     } finally {
+      console.log("Setting loading to false...");
       setLoading(false);
+      console.log("=== HASH VERIFICATION END ===");
     }
   };
 
