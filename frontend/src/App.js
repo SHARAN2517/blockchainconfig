@@ -92,23 +92,31 @@ function App() {
       const url = `${API}/verify/${verifyHash.trim()}`;
       console.log("Making API call to:", url);
       
-      const response = await axios.post(url);
-      console.log("API response received:", response);
-      console.log("Response data:", response.data);
+      // Simple fetch call instead of axios to test
+      const response = await fetch(url, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        }
+      });
       
-      if (response.data) {
-        setVerificationResult(response.data);
+      console.log("Fetch response:", response);
+      
+      if (response.ok) {
+        const data = await response.json();
+        console.log("Response data:", data);
+        
+        setVerificationResult(data);
         console.log("Verification result set in state");
         toast.success("Hash verification complete!");
         fetchVerifications();
       } else {
-        console.error("No data in response");
-        toast.error("No verification data received");
+        console.error("Response not ok:", response.status, response.statusText);
+        toast.error(`Verification failed: ${response.status} ${response.statusText}`);
       }
     } catch (error) {
-      console.error("Verification error:", error);
-      console.error("Error details:", error.response);
-      toast.error("Verification failed: " + (error.response?.data?.detail || error.message));
+      console.error("Error in handleHashVerification:", error);
+      toast.error("Verification failed: " + error.message);
     } finally {
       setLoading(false);
       console.log("handleHashVerification completed");
