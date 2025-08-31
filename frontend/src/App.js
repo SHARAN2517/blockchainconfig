@@ -75,23 +75,35 @@ function App() {
     }
   };
 
-  // Handle hash verification - super simple version for debugging
-  const handleHashVerification = () => {
-    console.log("Verify button clicked!");
-    alert("Verify button clicked with hash: " + verifyHash);
+  // Handle hash verification - fixed version
+  const handleHashVerification = async () => {
+    console.log("handleHashVerification called with hash:", verifyHash);
     
-    // For now, just manually set a test result to confirm the issue
-    setVerificationResult({
-      id: "manual-test",
-      file_hash: verifyHash,
-      is_authentic: true,
-      confidence_score: 0.85,
-      blockchain_verified: true,
-      analysis_details: {
-        risk_level: "low",
-        analysis_summary: "Manual test result - function is executing"
-      }
-    });
+    if (!verifyHash.trim()) {
+      toast.error("Please enter a hash to verify");
+      return;
+    }
+
+    setLoading(true);
+    setVerificationResult(null);
+    toast.info("Verifying hash...");
+
+    try {
+      const url = `${API}/verify/${verifyHash.trim()}`;
+      console.log("Making API call to:", url);
+      
+      const response = await axios.post(url);
+      console.log("API response:", response.data);
+      
+      setVerificationResult(response.data);
+      toast.success("Hash verification complete!");
+      fetchVerifications();
+    } catch (error) {
+      console.error("Verification error:", error);
+      toast.error("Verification failed: " + (error.response?.data?.detail || error.message));
+    } finally {
+      setLoading(false);
+    }
   };
 
   // Get file type icon
