@@ -222,32 +222,11 @@ function App() {
                   />
                   <Button
                     onClick={handleHashVerification}
-                    disabled={loading || !verifyHash.trim()}
+                    disabled={loading}
                     size="lg"
                     className="px-8"
                   >
                     {loading ? "Verifying..." : "Verify"}
-                  </Button>
-                  <Button
-                    onClick={() => {
-                      console.log("Test button clicked");
-                      setVerificationResult({
-                        id: "test-id",
-                        file_hash: "test-hash",
-                        is_authentic: true,
-                        confidence_score: 0.95,
-                        blockchain_verified: true,
-                        analysis_details: {
-                          risk_level: "low",
-                          analysis_summary: "Test result for debugging"
-                        }
-                      });
-                    }}
-                    variant="outline"
-                    size="lg"
-                    className="px-4"
-                  >
-                    Test
                   </Button>
                 </div>
 
