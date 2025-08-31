@@ -231,15 +231,6 @@ function App() {
                 </div>
 
                 {verificationResult && (
-                  <div className="mt-6 p-4 border-2 border-blue-500 bg-blue-50 rounded-lg">
-                    <h3 className="text-lg font-bold text-blue-900 mb-2">DEBUG: Verification Result Found</h3>
-                    <pre className="text-sm bg-white p-3 rounded border overflow-x-auto">
-                      {JSON.stringify(verificationResult, null, 2)}
-                    </pre>
-                  </div>
-                )}
-
-                {verificationResult && (
                   <Card className={`border-2 ${verificationResult.is_authentic ? "border-green-500 bg-green-50" : "border-red-500 bg-red-50"}`}>
                     <CardHeader>
                       <CardTitle className="flex items-center space-x-2">
